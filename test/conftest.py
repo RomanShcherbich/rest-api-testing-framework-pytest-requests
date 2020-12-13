@@ -24,6 +24,11 @@ class APIClient:
         print_http_request("GET", url)
         return requests.get(url=url, params=params, data=data, headers=headers)
 
+    def put(self, path='/', params=None, data=None, headers=None):
+        url = self.base_url + path
+        print_http_request("PUT", url)
+        return requests.put(url=url, params=params, data=data, headers=headers)
+
 
 def pytest_addoption(parser):
     parser.addoption(
@@ -51,16 +56,16 @@ def api_client(request):
 
 
 @pytest.fixture(scope="session")
-def headers():
+def default_headers():
     return {"Content-Type": "application/json"}
 
 
 @pytest.fixture(scope="session")
-def token(api_client, request, headers):
+def token(api_client, request, default_headers):
     username = request.config.getoption("--username")
     password = request.config.getoption("--password")
     body = json.dumps({"username": username, "password": password})
-    resp = api_client.post(AUTH_PATH, data=body, headers=headers)
+    resp = api_client.post(AUTH_PATH, data=body, headers=default_headers)
     token = resp.json()['token']
     assert resp.status_code == 200
     assert token is not None

@@ -1,11 +1,12 @@
 import pprint
 import pytest
 
-BOOKING_PATH = "/booking"
+from src.utils.EndPointUtils import BookingEndpoint
 
 
 def test_get_booking(api_client):
-    resp = api_client.get(BOOKING_PATH)
+    url = BookingEndpoint().get_path()
+    resp = api_client.get(url)
     status_code = resp.status_code
     assert status_code == 200
     resp_body_dic = resp.json()
@@ -16,9 +17,10 @@ def test_get_booking(api_client):
         assert booking_id > 0
 
 
-@pytest.mark.parametrize('id', [1, 2, 3, 4])
-def test_get_booking_by_id(api_client, id):
-    resp = api_client.get("{}/{}".format(BOOKING_PATH, id))
+@pytest.mark.parametrize('booking_id', [1, 2, 3, 4])
+def test_get_booking_by_id(api_client, booking_id):
+    url = BookingEndpoint().get_path_with_id(booking_id)
+    resp = api_client.get(url)
     resp_body_dic = resp.json()
     pprint.pprint(resp.text)
     assert resp.status_code == 200
