@@ -1,0 +1,26 @@
+import pprint
+import pytest
+
+BOOKING_PATH = "/booking"
+
+
+def test_get_booking(api_client):
+    resp = api_client.get(BOOKING_PATH)
+    status_code = resp.status_code
+    assert status_code == 200
+    resp_body_dic = resp.json()
+    pprint.pprint("Booking count = {}".format(len(resp_body_dic)))
+    pprint.pprint(resp.text)
+    for booking_dic in resp_body_dic:
+        booking_id = booking_dic['bookingid']
+        assert booking_id > 0
+
+
+@pytest.mark.parametrize('id', [1, 2, 3, 4])
+def test_get_booking_by_id(api_client, id):
+    resp = api_client.get("{}/{}".format(BOOKING_PATH, id))
+    resp_body_dic = resp.json()
+    pprint.pprint(resp.text)
+    assert resp.status_code == 200
+    assert resp_body_dic['firstname'] is not None
+    assert type(resp_body_dic['firstname']) is str

@@ -19,6 +19,11 @@ class APIClient:
         print_http_request("POST", url)
         return requests.post(url=url, params=params, data=data, headers=headers)
 
+    def get(self, path='/', params=None, data=None, headers=None):
+        url = self.base_url + path
+        print_http_request("GET", url)
+        return requests.get(url=url, params=params, data=data, headers=headers)
+
 
 def pytest_addoption(parser):
     parser.addoption(
